@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../services/api';
 import { IndianRupee, TrendingUp } from 'lucide-react';
+import { formatCurrency } from '../../utils/format';
 
 export default function ReportsRevenue() {
   const { data, isLoading } = useQuery({
@@ -26,7 +27,7 @@ export default function ReportsRevenue() {
           <div className="flex items-center justify-between">
             <div>
               <div className="text-sm text-gray-500">Total Revenue</div>
-              <div className="text-3xl font-bold text-emerald-600 mt-1">₹{(data?.totalRevenue ?? 0).toLocaleString()}</div>
+              <div className="text-3xl font-bold text-emerald-600 mt-1">{formatCurrency((data?.totalRevenue ?? 0))}</div>
             </div>
             <IndianRupee className="w-10 h-10 text-gray-300" />
           </div>
@@ -67,7 +68,7 @@ export default function ReportsRevenue() {
               <tr key={o._id}>
                 <td className="px-4 py-3 text-sm">{o.orderNumber}</td>
                 <td className="px-4 py-3 text-sm">{o.customerName}</td>
-                <td className="px-4 py-3 text-sm text-right font-medium">₹{o.total?.toLocaleString()}</td>
+                <td className="px-4 py-3 text-sm text-right font-medium">{formatCurrency(o.total)}</td>
                 <td className="px-4 py-3 text-sm text-gray-500">{o.createdAt ? new Date(o.createdAt).toLocaleDateString() : '—'}</td>
               </tr>
             ))}

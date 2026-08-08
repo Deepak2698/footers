@@ -4,8 +4,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../contexts/AuthContext';
 import { getProducts, deleteProduct } from '../../services/productService';
 import { Search, Plus, Edit, Eye, Trash2, Filter } from 'lucide-react';
+import { formatCurrency } from '../../utils/format';
+import { useToast } from '../../components/Toast';
 
 export default function ProductsList() {
+  const { showToast } = useToast();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [brand, setBrand] = useState('');
@@ -30,8 +33,7 @@ export default function ProductsList() {
       await deleteProduct(id);
       await queryClient.invalidateQueries({ queryKey: ['adminProducts'] });
     } catch (err) {
-      console.error(err);
-      alert(err?.response?.data?.message || err.message || 'Delete failed');
+      showToast(err?.response?.data?.message || err.message || 'Delete failed', 'error');
     }
   };
 
@@ -134,8 +136,8 @@ export default function ProductsList() {
                       <td className="px-6 py-4 text-sm text-gray-500">{p.category}</td>
                       <td className="px-6 py-4 text-sm text-gray-500">{p.brand}</td>
                       <td className="px-6 py-4 text-sm text-gray-900">
-                        ₹{p.price?.toLocaleString()}
-                        {p.discountPrice && <span className="ml-2 text-sm text-gray-400 line-through">₹{p.discountPrice?.toLocaleString()}</span>}
+                        {formatCurrency(p.price)}
+                        {p.discountPrice && <span className="ml-2 text-sm text-gray-400 line-through">{formatCurrency(p.discountPrice)}</span>}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900">{p.totalStock || 0}</td>
                       <td className="px-6 py-4">

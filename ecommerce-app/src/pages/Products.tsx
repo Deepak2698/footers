@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link, useNavigate } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { Filter, Grid, List, Star, ShoppingCart, ChevronLeft, ChevronRight, Home } from 'lucide-react';
 import { getProducts } from '../services/productService';
 import { useCart } from '../contexts/CartContext';
+import { formatCurrency } from '../utils/format';
 
 const Products: React.FC = () => {
   const { addItem } = useCart();
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
@@ -23,7 +23,7 @@ const Products: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(parseInt(searchParams.get('page') || '1', 10));
-  const [limit, setLimit] = useState<number>(parseInt(searchParams.get('limit') || '12', 10));
+  const [limit] = useState<number>(parseInt(searchParams.get('limit') || '12', 10));
   const [total, setTotal] = useState<number>(0);
 
   // products will be fetched from backend
@@ -351,7 +351,32 @@ const Products: React.FC = () => {
 
           {/* Products Grid */}
           <div className="lg:col-span-3">
-            {productsToDisplay.length === 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="product-card animate-pulse">
+                    <div className="aspect-square bg-black-800" />
+                    <div className="p-6 space-y-3">
+                      <div className="h-4 bg-black-800 rounded w-3/4" />
+                      <div className="h-4 bg-black-800 rounded w-1/2" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : error ? (
+              <div className="text-center py-16">
+                <div className="w-24 h-24 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Filter className="w-12 h-12 text-red-500" />
+                </div>
+                <h3 className="text-xl font-semibold text-black-100 mb-2">
+                  Couldn't load products
+                </h3>
+                <p className="text-black-400 mb-6">{error}</p>
+                <button onClick={() => window.location.reload()} className="btn-primary">
+                  Try Again
+                </button>
+              </div>
+            ) : productsToDisplay.length === 0 ? (
               <div className="text-center py-16">
                 <div className="w-24 h-24 bg-gold-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Filter className="w-12 h-12 text-gold-500" />
@@ -374,6 +399,8 @@ const Products: React.FC = () => {
                       <img
                         src={product.image}
                         alt={product.name}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     </div>
@@ -396,12 +423,12 @@ const Products: React.FC = () => {
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <div className="text-xl font-bold text-gold-500">
-                            ₹{product.price.toLocaleString()}
+                            {formatCurrency(product.price)}
                           </div>
                           {product.originalPrice && (
                             <div className="flex items-center space-x-2">
                               <span className="text-sm text-black-500 line-through">
-                                ₹{product.originalPrice.toLocaleString()}
+                                {formatCurrency(product.originalPrice)}
                               </span>
                               <span className="text-sm text-red-500 font-semibold">
                                 {product.discount}% off

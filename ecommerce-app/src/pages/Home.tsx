@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Star, Truck, Shield, RefreshCw, Sparkles, TrendingUp, Clock, Award, ChevronRight } from 'lucide-react';
+import { ArrowRight, Star, Truck, Shield, RefreshCw, Sparkles, TrendingUp, Clock, Award } from 'lucide-react';
 import { getProducts } from '../services/productService';
 import { useCart } from '../contexts/CartContext';
+import { formatCurrency } from '../utils/format';
 
 const Home: React.FC = () => {
   const [heroProducts, setHeroProducts] = useState<any[]>([]);
@@ -161,12 +162,12 @@ const Home: React.FC = () => {
                         <div className="flex items-center justify-between">
                           <div>
                             <div className="text-xl font-bold text-gold-500">
-                              ₹{product.price.toLocaleString()}
+                              {formatCurrency(product.price)}
                             </div>
                             {product.originalPrice && (
                               <div className="flex items-center space-x-2">
                                 <span className="text-sm text-black-500 line-through">
-                                  ₹{product.originalPrice.toLocaleString()}
+                                  {formatCurrency(product.originalPrice)}
                                 </span>
                                 <span className="text-sm text-red-500 font-semibold">
                                   {product.discount}% off
@@ -209,6 +210,8 @@ const Home: React.FC = () => {
                     <img
                       src={category.image}
                       alt={category.name}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                   </div>
@@ -257,6 +260,8 @@ const Home: React.FC = () => {
                     <img
                       src={product.image}
                       alt={product.name}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                   </div>
@@ -279,12 +284,12 @@ const Home: React.FC = () => {
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <div className="text-xl font-bold text-gold-500">
-                          ₹{product.price.toLocaleString()}
+                          {formatCurrency(product.price)}
                         </div>
                         {product.originalPrice && (
                           <div className="flex items-center space-x-2">
                             <span className="text-sm text-black-500 line-through">
-                              ₹{product.originalPrice.toLocaleString()}
+                              {formatCurrency(product.originalPrice)}
                             </span>
                             <span className="text-sm text-red-500 font-semibold">
                               {product.discount}% off
@@ -340,6 +345,8 @@ const Home: React.FC = () => {
                   <img
                     src={product.image}
                     alt={product.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
@@ -349,7 +356,7 @@ const Home: React.FC = () => {
                   </h3>
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-xl font-bold text-gold-500">
-                      ₹{product.price.toLocaleString()}
+                      {formatCurrency(product.price)}
                     </div>
                   </div>
                   <button onClick={() => addItem({
@@ -398,6 +405,8 @@ const Home: React.FC = () => {
                   <img
                     src={product.image}
                     alt={product.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
@@ -419,7 +428,7 @@ const Home: React.FC = () => {
                   </div>
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-xl font-bold text-gold-500">
-                      ₹{product.price.toLocaleString()}
+                      {formatCurrency(product.price)}
                     </div>
                   </div>
                   <button onClick={() => addItem({
@@ -468,6 +477,8 @@ const Home: React.FC = () => {
                   <img
                     src={product.image}
                     alt={product.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
@@ -477,7 +488,7 @@ const Home: React.FC = () => {
                   </h3>
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-xl font-bold text-gold-500">
-                      ₹{product.price.toLocaleString()}
+                      {formatCurrency(product.price)}
                     </div>
                   </div>
                   <button onClick={() => addItem({

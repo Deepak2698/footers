@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { 
-  Star, Heart, ShoppingCart, Truck, Shield, RefreshCw, 
-  Plus, Minus, Share2, Award, CheckCircle, Share, Package,
-  Clock, AlertCircle, ChevronRight, Info
+import {
+  Star, Heart, ShoppingCart, Truck, Shield, RefreshCw,
+  Plus, Minus, Award, CheckCircle, Share
 } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { getProducts } from '../services/productService';
 import ImageZoom from '../components/ImageZoom';
+import { formatCurrency } from '../utils/format';
+import { useToast } from '../components/Toast';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const { showToast } = useToast();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('');
-  const [selectedColor, setSelectedColor] = useState('');
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [recentlyViewed, setRecentlyViewed] = useState<any[]>([]);
 
@@ -100,11 +101,11 @@ const ProductDetail: React.FC = () => {
 
   const handleAddToCart = (goToCart = false) => {
     if (!product) return;
-    if (product.sizes?.length && !selectedSize) { alert('Please select a size'); return; }
+    if (product.sizes?.length && !selectedSize) { showToast('Please select a size', 'error'); return; }
     const sizeObj = product.sizes?.find((s: any) => s.size === selectedSize);
     const maxStock = sizeObj ? sizeObj.stock : product.stock;
-    if (maxStock < 1) { alert('Out of stock'); return; }
-    if (quantity > maxStock) { alert(`Only ${maxStock} items available`); return; }
+    if (maxStock < 1) { showToast('Out of stock', 'error'); return; }
+    if (quantity > maxStock) { showToast(`Only ${maxStock} items available`, 'error'); return; }
     addItem({
       productId: product.id, title: product.name, price: product.price,
       originalPrice: product.originalPrice, image: product.images[0],
@@ -125,11 +126,11 @@ const ProductDetail: React.FC = () => {
           url: window.location.href
         });
       } catch (err) {
-        console.log('Share failed:', err);
+        // User dismissed the native share sheet — not an error worth surfacing.
       }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert('Link copied to clipboard!');
+      showToast('Link copied to clipboard!', 'success');
     }
   };
 
@@ -265,6 +266,8 @@ const ProductDetail: React.FC = () => {
                   <img
                     src={image}
                     alt={`${product.name} ${index + 1}`}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover transition-transform hover:scale-110"
                   />
                 </button>
@@ -323,12 +326,12 @@ const ProductDetail: React.FC = () => {
               
               <div className="flex items-center space-x-4 mb-6">
                 <div className="text-3xl font-bold text-gold-500">
-                  ₹{product.price.toLocaleString()}
+                  {formatCurrency(product.price)}
                 </div>
                 {product.originalPrice && (
                   <>
                     <span className="text-xl text-black-500 line-through">
-                      ₹{product.originalPrice.toLocaleString()}
+                      {formatCurrency(product.originalPrice)}
                     </span>
                     <span className="text-lg text-red-500 font-semibold">
                       {product.discount}% off
@@ -477,6 +480,8 @@ const ProductDetail: React.FC = () => {
                   <img
                     src={product.seller.logo}
                     alt={product.seller.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-12 h-12 rounded-lg"
                   />
                   <div>
@@ -641,6 +646,8 @@ const ProductDetail: React.FC = () => {
                           key={index}
                           src={image}
                           alt={`Review ${index + 1} by ${review.userName}`}
+                          loading="lazy"
+                          decoding="async"
                           className="w-20 h-20 rounded-lg object-cover"
                         />
                       ))}
@@ -673,6 +680,8 @@ const ProductDetail: React.FC = () => {
                   <img
                     src={relatedProduct.image}
                     alt={relatedProduct.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
@@ -695,12 +704,12 @@ const ProductDetail: React.FC = () => {
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <div className="text-xl font-bold text-gold-500">
-                        ₹{relatedProduct.price.toLocaleString()}
+                        {formatCurrency(relatedProduct.price)}
                       </div>
                       {relatedProduct.originalPrice && (
                         <div className="flex items-center space-x-2">
                           <span className="text-sm text-black-500 line-through">
-                            ₹{relatedProduct.originalPrice.toLocaleString()}
+                            {formatCurrency(relatedProduct.originalPrice)}
                           </span>
                           <span className="text-sm text-red-500 font-semibold">
                             {relatedProduct.discount}% off
@@ -736,6 +745,8 @@ const ProductDetail: React.FC = () => {
                       <img
                         src={item.image}
                         alt={item.name}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     </div>
@@ -744,7 +755,7 @@ const ProductDetail: React.FC = () => {
                         {item.name}
                       </h3>
                       <div className="text-gold-500 font-bold text-sm">
-                        ₹{item.price.toLocaleString()}
+                        {formatCurrency(item.price)}
                       </div>
                     </div>
                   </div>

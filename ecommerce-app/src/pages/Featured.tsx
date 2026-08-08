@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Star, ShoppingCart } from 'lucide-react';
 import { getProducts } from '../services/productService';
 import { useCart } from '../contexts/CartContext';
+import { formatCurrency } from '../utils/format';
 
 const Featured: React.FC = () => {
   const [products, setProducts] = useState<any[]>([]);
@@ -64,7 +65,7 @@ const Featured: React.FC = () => {
                 <div className="p-4">
                   <Link to={`/product/${p.id}`}><h3 className="font-semibold text-black-100 mb-2">{p.name}</h3></Link>
                   <div className="flex items-center gap-1 mb-2"><Star className="w-4 h-4 text-gold-500 fill-current" /><span className="text-sm text-black-300">{p.rating}</span></div>
-                  <div className="text-xl font-bold text-gold-500 mb-3">₹{p.price.toLocaleString()}</div>
+                  <div className="text-xl font-bold text-gold-500 mb-3">{formatCurrency(p.price)}</div>
                   <button onClick={() => handleAdd(p)} className="w-full btn-primary flex items-center justify-center gap-2">
                     <ShoppingCart className="w-4 h-4" /> Add to Cart
                   </button>

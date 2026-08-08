@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Shield, Truck, CreditCard, Smartphone, Building, Wallet, DollarSign, Check } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { checkoutOrder } from '../services/orderService';
+import { formatCurrency } from '../utils/format';
 
 const paymentMethods = [
   { id: 'upi', name: 'UPI', icon: Smartphone, description: 'GPay, PhonePe, PayTM' },
@@ -127,22 +128,22 @@ const Checkout: React.FC = () => {
               {items.map(i => (
                 <div key={i.id} className="flex justify-between text-sm">
                   <span className="text-black-400">{i.title} × {i.quantity}</span>
-                  <span>₹{(i.price * i.quantity).toLocaleString()}</span>
+                  <span>{formatCurrency(i.price * i.quantity)}</span>
                 </div>
               ))}
             </div>
             <div className="space-y-2 text-sm border-t border-black-700 pt-4">
-              <div className="flex justify-between"><span>Subtotal</span><span>₹{subtotal.toLocaleString()}</span></div>
-              {getCouponDiscount() > 0 && <div className="flex justify-between text-green-500"><span>Coupon</span><span>-₹{getCouponDiscount().toLocaleString()}</span></div>}
-              <div className="flex justify-between"><span>Shipping</span><span>{getShipping() === 0 ? 'FREE' : `₹${getShipping()}`}</span></div>
-              {getTax() > 0 && <div className="flex justify-between"><span>GST</span><span>₹{getTax().toLocaleString()}</span></div>}
-              <div className="flex justify-between font-bold text-lg pt-2"><span>Total</span><span className="text-gold-500">₹{total.toLocaleString()}</span></div>
+              <div className="flex justify-between"><span>Subtotal</span><span>{formatCurrency(subtotal)}</span></div>
+              {getCouponDiscount() > 0 && <div className="flex justify-between text-green-500"><span>Coupon</span><span>-{formatCurrency(getCouponDiscount())}</span></div>}
+              <div className="flex justify-between"><span>Shipping</span><span>{getShipping() === 0 ? 'FREE' : formatCurrency(getShipping())}</span></div>
+              {getTax() > 0 && <div className="flex justify-between"><span>GST</span><span>{formatCurrency(getTax())}</span></div>}
+              <div className="flex justify-between font-bold text-lg pt-2"><span>Total</span><span className="text-gold-500">{formatCurrency(total)}</span></div>
             </div>
             <div className="flex items-center space-x-2 mt-4 p-3 bg-black-800 rounded text-xs text-black-400">
               <Shield className="w-4 h-4 text-gold-500" /><span>Secure checkout</span>
               <Truck className="w-4 h-4 text-gold-500 ml-2" /><span>2-3 days delivery</span>
             </div>
-            <button onClick={handlePlaceOrder} className="w-full btn-primary mt-4">Place Order • ₹{total.toLocaleString()}</button>
+            <button onClick={handlePlaceOrder} className="w-full btn-primary mt-4">Place Order • {formatCurrency(total)}</button>
           </div>
         </div>
       </div>

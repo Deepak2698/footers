@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Check, Package, Truck, Home, ShoppingBag } from 'lucide-react';
+import { Check, Truck, Home, ShoppingBag } from 'lucide-react';
+import { formatCurrency } from '../utils/format';
 
 const OrderConfirmation: React.FC = () => {
   const location = useLocation();
@@ -38,7 +39,7 @@ const OrderConfirmation: React.FC = () => {
             </div>
             <div>
               <h3 className="text-sm text-black-400 mb-1">Payment</h3>
-              <p className="text-black-300 capitalize">{order.paymentMethod}<br />₹{order.total?.toLocaleString()}</p>
+              <p className="text-black-300 capitalize">{order.paymentMethod}<br />{formatCurrency(order.total)}</p>
             </div>
           </div>
           {order.trackingNumber && (

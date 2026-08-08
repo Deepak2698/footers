@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../components/Toast';
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'staff', adminCode: '' });
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleChange = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
 
@@ -13,11 +15,10 @@ export default function Register() {
     try {
       const payload = { ...form };
       await api.post('/auth/register', payload);
-      alert('Registration successful. Please login.');
+      showToast('Registration successful. Please login.', 'success');
       navigate('/login');
     } catch (err) {
-      console.error(err);
-      alert(err?.response?.data?.message || err.message || 'Registration failed');
+      showToast(err?.response?.data?.message || err.message || 'Registration failed', 'error');
     }
   };
 

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Phone, MessageCircle, Mail, MapPin, Clock, Send, User, MessageSquare } from 'lucide-react';
+import { useToast } from '../components/Toast';
 
 const Contact: React.FC = () => {
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,7 +27,7 @@ const Contact: React.FC = () => {
     
     // Simulate form submission
     setTimeout(() => {
-      alert('Thank you for contacting us! We will get back to you soon.');
+      showToast('Thank you for contacting us! We will get back to you soon.', 'success');
       setFormData({
         name: '',
         email: '',

@@ -31,20 +31,8 @@ const Footer: React.FC = () => {
       title: 'About',
       links: [
         { name: 'About Us', href: '/about' },
-        { name: 'Careers', href: '/careers' },
-        { name: 'Press', href: '/press' },
-        { name: 'Sustainability', href: '/sustainability' },
-        { name: 'Investors', href: '/investors' },
-      ],
-    },
-    {
-      title: 'Sell on LuxMart',
-      links: [
-        { name: 'Start Selling', href: '/seller/register' },
-        { name: 'Seller Dashboard', href: '/seller/dashboard' },
-        { name: 'Seller Support', href: '/seller/support' },
-        { name: 'Seller Fees', href: '/seller/fees' },
-        { name: 'Success Stories', href: '/seller/stories' },
+        { name: 'Contact Us', href: '/contact' },
+        { name: 'Featured Products', href: '/featured' },
       ],
     },
   ];
@@ -99,7 +87,7 @@ const Footer: React.FC = () => {
       {/* Main Footer Content */}
       <div className="section-padding">
         <div className="container-custom">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {/* Brand Section */}
             <div className="lg:col-span-1">
               <div className="flex items-center space-x-2 mb-4">

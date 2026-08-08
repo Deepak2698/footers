@@ -1,23 +1,22 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+import pino from 'pino';
+import env from './env.js';
 
-dotenv.config();
-
-const MONGO_URI = process.env.MONGO_URI;
+const logger = pino({ level: process.env.LOG_LEVEL || 'info' });
 
 async function connectDB() {
-  if (!MONGO_URI) {
+  if (!env.MONGO_URI) {
     throw new Error('MONGO_URI is not defined in environment');
   }
 
   try {
-    const conn = await mongoose.connect(MONGO_URI, {
+    const conn = await mongoose.connect(env.MONGO_URI, {
       // useNewUrlParser and useUnifiedTopology are defaults in newer mongoose versions
     });
-    console.log(`MongoDB connected: ${conn.connection.host}`);
+    logger.info({ host: conn.connection.host }, 'MongoDB connected');
     return conn;
   } catch (error) {
-    console.error(`Error connecting to MongoDB: ${error.message}`);
+    logger.error({ err: error }, 'Error connecting to MongoDB');
     throw error;
   }
 }

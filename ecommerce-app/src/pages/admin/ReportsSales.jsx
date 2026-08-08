@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import orderService from '../../services/orderService';
 import { ShoppingCart, Package } from 'lucide-react';
+import { formatCurrency } from '../../utils/format';
 
 export default function ReportsSales() {
   const { data, isLoading } = useQuery({
@@ -27,7 +28,7 @@ export default function ReportsSales() {
           <div className="flex items-center justify-between">
             <div>
               <div className="text-sm text-gray-500">Total Sales</div>
-              <div className="text-3xl font-bold text-gray-900 mt-1">₹{totalSales.toLocaleString()}</div>
+              <div className="text-3xl font-bold text-gray-900 mt-1">{formatCurrency(totalSales)}</div>
             </div>
             <ShoppingCart className="w-10 h-10 text-gray-300" />
           </div>
@@ -70,7 +71,7 @@ export default function ReportsSales() {
                 <td className="px-6 py-4 text-sm font-medium">{o.orderNumber}</td>
                 <td className="px-6 py-4 text-sm">{o.customerName}</td>
                 <td className="px-6 py-4 text-sm">{o.items?.length || 0}</td>
-                <td className="px-6 py-4 text-sm font-medium">₹{o.total?.toLocaleString()}</td>
+                <td className="px-6 py-4 text-sm font-medium">{formatCurrency(o.total)}</td>
                 <td className="px-6 py-4 text-sm capitalize">{o.status}</td>
                 <td className="px-6 py-4 text-sm text-gray-500">{o.createdAt ? new Date(o.createdAt).toLocaleDateString() : '—'}</td>
               </tr>

@@ -14,7 +14,16 @@ async function seed() {
 
     const sampleCategories = ['Sandals', 'Chappals', 'Juttis', 'Slippers', 'Boots'];
     const brands = ['Footers', 'KolhaCraft', 'LeatherWorks', 'TraditionCo'];
-    const sizeOptions = ['S', 'M', 'L', 'XL'];
+    // Footwear is sized numerically (UK sizing), not S/M/L/XL.
+    const sizeOptions = ['7', '8', '9', '10', '11'];
+    // Real product photography shipped in ecommerce-app/public/assets, served at "/assets/...".
+    // via.placeholder.com is unreachable, so use these instead of dead external URLs.
+    const sampleImages = [
+      'VKS_8484.JPG', 'VKS_8488.JPG', 'VKS_8489.JPG', 'VKS_8494.JPG', 'VKS_8501.JPG',
+      'VKS_8509.JPG', 'VKS_8512.JPG', 'VKS_8516.JPG', 'VKS_8521.JPG', 'VKS_8525.JPG',
+      'VKS_8527.JPG', 'VKS_8536.JPG', 'VKS_8540.JPG', 'VKS_8541.JPG', 'VKS_8545.JPG',
+      'VKS_8551.JPG', 'VKS_8557.JPG', 'VKS_8559.JPG'
+    ];
 
     const products = Array.from({ length: 20 }).map((_, i) => {
       const id = i + 1;
@@ -25,9 +34,7 @@ async function seed() {
       const discountPercent = [0, 10, 15, 20, 25][i % 5];
       const discountPrice = discountPercent ? Math.round(price * (1 - discountPercent / 100)) : price;
 
-      const images = [
-        `https://via.placeholder.com/800x800.png?text=${encodeURIComponent(title)}`
-      ];
+      const images = [`/assets/${sampleImages[i % sampleImages.length]}`];
 
       const sizes = sizeOptions.map((s, idx) => ({ size: s, stock: Math.floor(Math.random() * 20) + 1 }));
 
@@ -50,7 +57,9 @@ async function seed() {
       };
     });
 
-    const inserted = await Product.insertMany(products);
+    // Product.create (not insertMany) so the pre('save') hooks that generate
+    // the unique `slug` field actually run for each document.
+    const inserted = await Product.create(products);
     console.log(`Inserted ${inserted.length} products`);
     process.exit(0);
   } catch (err) {

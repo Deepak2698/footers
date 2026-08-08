@@ -2,7 +2,8 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import orderService from '../../services/orderService';
-import { ArrowLeft, User, Phone, Package, Calendar, DollarSign, CheckCircle, XCircle, Package as PackageIcon, Truck, FileText } from 'lucide-react';
+import { ArrowLeft, User, Phone, Package, Calendar, DollarSign, CheckCircle, XCircle, Package as PackageIcon, Truck } from 'lucide-react';
+import { formatCurrency } from '../../utils/format';
 
 const statusColors = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -80,7 +81,7 @@ export default function OrderDetails() {
           <div className="flex items-center justify-between">
             <div>
               <div className="text-sm text-gray-500">Total Amount</div>
-              <div className="text-xl font-bold text-gray-900">₹{order.total?.toLocaleString()}</div>
+              <div className="text-xl font-bold text-gray-900">{formatCurrency(order.total)}</div>
             </div>
             <DollarSign className="w-8 h-8 text-gray-400" />
           </div>
@@ -146,31 +147,31 @@ export default function OrderDetails() {
                   <td className="px-4 py-3 text-sm text-gray-900">{it.title || it.productId}</td>
                   <td className="px-4 py-3 text-sm text-gray-500">{it.size || 'N/A'}</td>
                   <td className="px-4 py-3 text-sm text-gray-900">{it.quantity}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900 text-right">₹{it.price?.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">₹{(it.price * it.quantity).toLocaleString()}</td>
+                  <td className="px-4 py-3 text-sm text-gray-900 text-right">{formatCurrency(it.price)}</td>
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">{formatCurrency((it.price * it.quantity))}</td>
                 </tr>
               ))}
             </tbody>
             <tfoot className="border-t border-gray-200">
               <tr>
                 <td colSpan={3} className="px-4 py-3 text-right font-medium text-gray-900">Subtotal</td>
-                <td colSpan={2} className="px-4 py-3 text-right font-medium text-gray-900">₹{order.subtotal?.toLocaleString()}</td>
+                <td colSpan={2} className="px-4 py-3 text-right font-medium text-gray-900">{formatCurrency(order.subtotal)}</td>
               </tr>
               {order.discount > 0 && (
                 <tr>
                   <td colSpan={3} className="px-4 py-3 text-right text-gray-500">Discount</td>
-                  <td colSpan={2} className="px-4 py-3 text-right text-red-600">-₹{order.discount?.toLocaleString()}</td>
+                  <td colSpan={2} className="px-4 py-3 text-right text-red-600">-{formatCurrency(order.discount)}</td>
                 </tr>
               )}
               {order.tax > 0 && (
                 <tr>
                   <td colSpan={3} className="px-4 py-3 text-right text-gray-500">Tax</td>
-                  <td colSpan={2} className="px-4 py-3 text-right text-gray-900">₹{order.tax?.toLocaleString()}</td>
+                  <td colSpan={2} className="px-4 py-3 text-right text-gray-900">{formatCurrency(order.tax)}</td>
                 </tr>
               )}
               <tr className="bg-gray-50">
                 <td colSpan={3} className="px-4 py-3 text-right font-bold text-gray-900">Total</td>
-                <td colSpan={2} className="px-4 py-3 text-right font-bold text-gray-900">₹{order.total?.toLocaleString()}</td>
+                <td colSpan={2} className="px-4 py-3 text-right font-bold text-gray-900">{formatCurrency(order.total)}</td>
               </tr>
             </tfoot>
           </table>

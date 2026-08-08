@@ -24,7 +24,7 @@ function buildImageUrlsFromFiles(req) {
 // @desc    Create a new product
 // @route   POST /api/products
 // @access  Private (Admin/Owner)
-export const createProduct = async (req, res) => {
+export const createProduct = async (req, res, next) => {
   try {
     // Accept form-data and JSON bodies. Parse fields that may arrive as JSON strings.
     const {
@@ -128,17 +128,14 @@ export const createProduct = async (req, res) => {
         message: 'Product with this slug already exists'
       });
     }
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 };
 
 // @desc    Get all products with filtering and pagination
 // @route   GET /api/products
 // @access  Public
-export const getProducts = async (req, res) => {
+export const getProducts = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -206,8 +203,10 @@ export const getProducts = async (req, res) => {
       sort = { createdAt: -1 };
     }
 
-    // Execute query
+    // Execute query. Exclude the long-form `description` field from list views —
+    // it's only needed on the product detail page (getProductById fetches the full doc).
     const products = await Product.find(query)
+      .select('-description')
       .sort(sort)
       .skip(skip)
       .limit(limit);
@@ -239,17 +238,14 @@ export const getProducts = async (req, res) => {
 
     res.json(response);
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 };
 
 // @desc    Get single product by ID
 // @route   GET /api/products/:id
 // @access  Public
-export const getProductById = async (req, res) => {
+export const getProductById = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
 
@@ -271,17 +267,14 @@ export const getProductById = async (req, res) => {
         message: 'Product not found'
       });
     }
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 };
 
 // @desc    Update product
 // @route   PUT /api/products/:id
 // @access  Private (Admin/Owner)
-export const updateProduct = async (req, res) => {
+export const updateProduct = async (req, res, next) => {
   try {
     let product = await Product.findById(req.params.id);
 
@@ -385,17 +378,14 @@ export const updateProduct = async (req, res) => {
         message: 'Product with this slug already exists'
       });
     }
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 };
 
 // @desc    Delete product
 // @route   DELETE /api/products/:id
 // @access  Private (Admin/Owner)
-export const deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
 
@@ -419,9 +409,6 @@ export const deleteProduct = async (req, res) => {
         message: 'Product not found'
       });
     }
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
+    next(error);
   }
 };

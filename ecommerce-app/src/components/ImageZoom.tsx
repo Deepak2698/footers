@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { ZoomIn, ZoomOut, Maximize2, X } from 'lucide-react';
+import { ZoomIn, ZoomOut, X } from 'lucide-react';
 
 interface ImageZoomProps {
   src: string;

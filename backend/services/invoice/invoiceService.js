@@ -2,12 +2,24 @@ export function generateInvoiceNumber(orderNumber) {
   return `INV-${orderNumber}`;
 }
 
+// Customer-supplied fields (name, address, item titles, etc.) flow into this HTML,
+// which is emailed and could be re-rendered elsewhere — escape before interpolating.
+function escapeHtml(value) {
+  if (value === null || value === undefined) return '';
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export function buildInvoiceHtml(order) {
   const itemsHtml = (order.items || []).map(it => `
     <tr>
-      <td style="padding:8px;border-bottom:1px solid #eee;">${it.title}</td>
-      <td style="padding:8px;border-bottom:1px solid #eee;">${it.size || '—'}</td>
-      <td style="padding:8px;border-bottom:1px solid #eee;text-align:center;">${it.quantity}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee;">${escapeHtml(it.title)}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee;">${escapeHtml(it.size) || '—'}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee;text-align:center;">${escapeHtml(it.quantity)}</td>
       <td style="padding:8px;border-bottom:1px solid #eee;text-align:right;">₹${it.price?.toLocaleString('en-IN')}</td>
       <td style="padding:8px;border-bottom:1px solid #eee;text-align:right;">₹${(it.price * it.quantity).toLocaleString('en-IN')}</td>
     </tr>
@@ -28,8 +40,8 @@ export function buildInvoiceHtml(order) {
     <p><strong>Date:</strong> ${new Date(order.createdAt || Date.now()).toLocaleDateString('en-IN')}</p>
     <hr style="border:none;border-top:1px solid #eee;margin:20px 0;">
     <h3>Customer Details</h3>
-    <p>${order.customerName}<br>${order.customerPhone}<br>${order.customerEmail || ''}</p>
-    <p>${addr.line1 || ''}<br>${addr.city || ''}, ${addr.state || ''} — ${addr.pincode || ''}</p>
+    <p>${escapeHtml(order.customerName)}<br>${escapeHtml(order.customerPhone)}<br>${escapeHtml(order.customerEmail)}</p>
+    <p>${escapeHtml(addr.line1)}<br>${escapeHtml(addr.city)}, ${escapeHtml(addr.state)} — ${escapeHtml(addr.pincode)}</p>
     <h3>Products</h3>
     <table style="width:100%;border-collapse:collapse;">
       <thead><tr style="background:#f9fafb;">

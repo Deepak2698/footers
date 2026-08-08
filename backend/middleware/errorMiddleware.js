@@ -34,6 +34,12 @@ export function errorHandler(err, req, res, next) { // eslint-disable-line
     return res.status(400).json({ success: false, message: messages });
   }
 
+  // Mongoose cast errors (invalid ObjectId, wrong type for a field/query param, etc.)
+  // — a client mistake, not a server failure, so this must be a 400, not a 500.
+  if (err.name === 'CastError') {
+    return res.status(400).json({ success: false, message: `Invalid value for field \`${err.path}\`` });
+  }
+
   // MongoServerError (duplicate keys, etc.)
   if (err.name === 'MongoServerError' || err.code === 11000) {
     const msg = err.message || 'Database error';

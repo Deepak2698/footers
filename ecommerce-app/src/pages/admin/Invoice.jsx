@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import orderService from '../../services/orderService';
 import { Search, FileText, Printer, ArrowLeft } from 'lucide-react';
+import { formatCurrency } from '../../utils/format';
 
 function InvoiceDetail({ orderId }) {
   const { data, isLoading } = useQuery({
@@ -70,17 +71,17 @@ function InvoiceDetail({ orderId }) {
                 <td className="py-3 text-sm">{it.title}</td>
                 <td className="py-3 text-sm text-gray-500">{it.size || '—'}</td>
                 <td className="py-3 text-sm text-right">{it.quantity}</td>
-                <td className="py-3 text-sm text-right">₹{it.price?.toLocaleString()}</td>
-                <td className="py-3 text-sm text-right font-medium">₹{(it.price * it.quantity).toLocaleString()}</td>
+                <td className="py-3 text-sm text-right">{formatCurrency(it.price)}</td>
+                <td className="py-3 text-sm text-right font-medium">{formatCurrency((it.price * it.quantity))}</td>
               </tr>
             ))}
           </tbody>
         </table>
         <div className="flex justify-end">
           <div className="w-48 space-y-2">
-            <div className="flex justify-between text-sm"><span>Subtotal</span><span>₹{order.subtotal?.toLocaleString()}</span></div>
-            {order.discount > 0 && <div className="flex justify-between text-sm text-red-600"><span>Discount</span><span>-₹{order.discount?.toLocaleString()}</span></div>}
-            <div className="flex justify-between font-bold text-lg border-t pt-2"><span>Total</span><span>₹{order.total?.toLocaleString()}</span></div>
+            <div className="flex justify-between text-sm"><span>Subtotal</span><span>{formatCurrency(order.subtotal)}</span></div>
+            {order.discount > 0 && <div className="flex justify-between text-sm text-red-600"><span>Discount</span><span>-{formatCurrency(order.discount)}</span></div>}
+            <div className="flex justify-between font-bold text-lg border-t pt-2"><span>Total</span><span>{formatCurrency(order.total)}</span></div>
           </div>
         </div>
       </div>
@@ -141,7 +142,7 @@ export default function Invoice() {
                   <td className="px-6 py-4 text-sm font-medium">{o.orderNumber}</td>
                   <td className="px-6 py-4 text-sm">{o.customerName}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">{o.createdAt ? new Date(o.createdAt).toLocaleDateString() : '—'}</td>
-                  <td className="px-6 py-4 text-sm font-medium">₹{o.total?.toLocaleString()}</td>
+                  <td className="px-6 py-4 text-sm font-medium">{formatCurrency(o.total)}</td>
                   <td className="px-6 py-4 text-sm capitalize">{o.status}</td>
                   <td className="px-6 py-4 text-right">
                     <Link to={`/admin/invoice/${o._id}`} className="inline-flex items-center text-sm text-amber-600 hover:text-amber-700">

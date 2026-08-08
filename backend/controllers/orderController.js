@@ -5,6 +5,12 @@ import { createShipment, getTrackingStatus } from '../services/shipping/Shipping
 import { sendOrderInvoiceEmail } from '../services/email/emailService.js';
 import { generateInvoiceNumber } from '../services/invoice/invoiceService.js';
 
+// Escape regex metacharacters so user-supplied search text can't build an
+// expensive/malicious pattern (ReDoS) or an unintended match (e.g. `.*`).
+function escapeRegex(str) {
+  return String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function generateOrderNumber() {
   return 'ORD-' + Date.now().toString(36).toUpperCase();
 }
@@ -194,10 +200,11 @@ export const getOrders = async (req, res, next) => {
     const query = {};
     if (status) query.status = status;
     if (search) {
+      const safeSearch = escapeRegex(search);
       query.$or = [
-        { orderNumber: { $regex: search, $options: 'i' } },
-        { customerName: { $regex: search, $options: 'i' } },
-        { customerPhone: { $regex: search, $options: 'i' } }
+        { orderNumber: { $regex: safeSearch, $options: 'i' } },
+        { customerName: { $regex: safeSearch, $options: 'i' } },
+        { customerPhone: { $regex: safeSearch, $options: 'i' } }
       ];
     }
     const skip = (Number(page) - 1) * Number(limit);

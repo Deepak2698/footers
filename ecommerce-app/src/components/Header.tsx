@@ -42,30 +42,30 @@ const Header: React.FC = () => {
               <span>•</span>
               <div className="flex items-center space-x-2">
                 <MessageCircle className="w-4 h-4 text-green-500" />
-                <span>+918087 96 30 35</span>
+                <a href="https://wa.me/918087963035" target="_blank" rel="noopener noreferrer" className="text-black-400 hover:text-gold-500 transition-colors">
+                  +91 80879 63035
+                </a>
               </div>
               <span>•</span>
               <div className="flex items-center space-x-2">
                 <UserCircle className="w-4 h-4 text-gold-500" />
-                <Link to="/seller" className="text-black-400 hover:text-gold-500 transition-colors">
+                <Link to="/about" className="text-black-400 hover:text-gold-500 transition-colors">
                   Swapnil Katake
                 </Link>
               </div>
               <span>•</span>
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4 text-blue-500" />
-                <Link to="/track-order" className="text-black-400 hover:text-gold-500 transition-colors">
-                  9579403248
-                </Link>
+                <a href="tel:+919579403248" className="text-black-400 hover:text-gold-500 transition-colors">
+                  +91 95794 03248
+                </a>
               </div>
               <span>•</span>
               <span>Free shipping on orders above ₹999</span>
               <span>•</span>
               <span>24/7 Customer Support</span>
               <span>•</span>
-              <Link to="/seller" className="text-black-400 hover:text-gold-500 transition-colors">
-                Best Quality Products
-              </Link>
+              <span>Best Quality Products</span>
               <span>•</span>
               <Link to="/track-order" className="text-black-400 hover:text-gold-500 transition-colors">
                 Track Order

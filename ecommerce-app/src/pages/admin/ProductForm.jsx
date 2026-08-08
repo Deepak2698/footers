@@ -3,13 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '../../services/api';
 import { getProductById } from '../../services/productService';
-
-function generateProductCode(brand, index = 1) {
-  const b = (brand || 'GEN').toUpperCase().replace(/\s+/g, '-');
-  return `FT-${b}-${String(index).padStart(4, '0')}`;
-}
+import { useToast } from '../../components/Toast';
 
 export default function ProductForm() {
+  const { showToast } = useToast();
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -79,8 +76,7 @@ export default function ProductForm() {
       queryClient.invalidateQueries({ queryKey: ['adminProducts'] });
       navigate('/admin/products');
     } catch (err) {
-      console.error(err);
-      alert(err?.response?.data?.message || err.message || 'Save failed');
+      showToast(err?.response?.data?.message || err.message || 'Save failed', 'error');
     }
   };
 

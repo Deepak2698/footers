@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import orderService from '../../services/orderService';
 import { Search, Filter, Eye, Package, Phone, User } from 'lucide-react';
+import { formatCurrency } from '../../utils/format';
 
 const statusColors = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -125,7 +126,7 @@ export default function OrdersList() {
                           </div>
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900">{totalQty}</td>
-                        <td className="px-6 py-4 text-sm font-medium text-gray-900">₹{o.total?.toLocaleString()}</td>
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900">{formatCurrency(o.total)}</td>
                         <td className="px-6 py-4">
                           <select
                             value={o.status}

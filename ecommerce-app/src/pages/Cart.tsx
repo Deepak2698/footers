@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Plus, Minus, Trash2, ArrowLeft, Shield, Truck, RefreshCw, X } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import { formatCurrency } from '../utils/format';
+import { useToast } from '../components/Toast';
 
 const Cart: React.FC = () => {
   const {
@@ -10,10 +12,11 @@ const Cart: React.FC = () => {
     getShipping, getCouponDiscount, getTotal
   } = useCart();
   const [inputCoupon, setInputCoupon] = useState(couponCode);
+  const { showToast } = useToast();
 
   const applyCoupon = () => {
     if (inputCoupon.toUpperCase() === 'SAVE10') setCouponCode('SAVE10');
-    else alert('Invalid coupon. Try SAVE10');
+    else showToast('Invalid coupon. Try SAVE10', 'error');
   };
 
   const subtotal = getSubtotal();
@@ -85,7 +88,7 @@ const Cart: React.FC = () => {
                           <Plus className="w-4 h-4" />
                         </button>
                       </div>
-                      <div className="text-lg sm:text-xl font-bold text-gold-500">₹{(item.price * item.quantity).toLocaleString()}</div>
+                      <div className="text-lg sm:text-xl font-bold text-gold-500">{formatCurrency(item.price * item.quantity)}</div>
                     </div>
                   </div>
                 </div>
@@ -103,12 +106,12 @@ const Cart: React.FC = () => {
           <div className="card p-4 sm:p-6 sticky top-4 h-fit order-first lg:order-last">
             <h2 className="text-xl font-semibold text-black-100 mb-6">Order Summary</h2>
             <div className="space-y-3 mb-6 text-sm">
-              <div className="flex justify-between"><span className="text-black-400">Subtotal</span><span>₹{subtotal.toLocaleString()}</span></div>
-              {itemDiscount > 0 && <div className="flex justify-between"><span className="text-black-400">Product Savings</span><span className="text-green-500">-₹{itemDiscount.toLocaleString()}</span></div>}
-              {couponDiscount > 0 && <div className="flex justify-between"><span className="text-black-400">Coupon</span><span className="text-green-500">-₹{couponDiscount.toLocaleString()}</span></div>}
-              <div className="flex justify-between"><span className="text-black-400">Shipping</span><span>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span></div>
+              <div className="flex justify-between"><span className="text-black-400">Subtotal</span><span>{formatCurrency(subtotal)}</span></div>
+              {itemDiscount > 0 && <div className="flex justify-between"><span className="text-black-400">Product Savings</span><span className="text-green-500">-{formatCurrency(itemDiscount)}</span></div>}
+              {couponDiscount > 0 && <div className="flex justify-between"><span className="text-black-400">Coupon</span><span className="text-green-500">-{formatCurrency(couponDiscount)}</span></div>}
+              <div className="flex justify-between"><span className="text-black-400">Shipping</span><span>{shipping === 0 ? 'FREE' : formatCurrency(shipping)}</span></div>
               <div className="border-t border-black-700 pt-3 flex justify-between font-bold text-lg">
-                <span>Total</span><span className="text-gold-500">₹{total.toLocaleString()}</span>
+                <span>Total</span><span className="text-gold-500">{formatCurrency(total)}</span>
               </div>
             </div>
             <div className="flex gap-2 mb-6">

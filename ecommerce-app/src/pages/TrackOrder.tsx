@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Search, Package, Truck, CheckCircle } from 'lucide-react';
 import { trackOrder } from '../services/orderService';
+import { formatCurrency } from '../utils/format';
 
 const TrackOrder: React.FC = () => {
   const [params] = useSearchParams();
@@ -57,7 +58,7 @@ const TrackOrder: React.FC = () => {
                   <h2 className="text-xl font-semibold text-black-100">{order.orderNumber}</h2>
                   <p className="text-black-400 capitalize">Status: {order.status}</p>
                 </div>
-                <span className="text-gold-500 font-bold">₹{order.total?.toLocaleString()}</span>
+                <span className="text-gold-500 font-bold">{formatCurrency(order.total)}</span>
               </div>
               {order.trackingNumber && (
                 <div className="p-4 bg-black-800 rounded-lg">
@@ -72,7 +73,7 @@ const TrackOrder: React.FC = () => {
                 {order.items?.map((it: any, i: number) => (
                   <div key={i} className="flex justify-between text-sm text-black-400">
                     <span>{it.title} {it.size ? `(Size ${it.size})` : ''} × {it.quantity}</span>
-                    <span>₹{(it.price * it.quantity).toLocaleString()}</span>
+                    <span>{formatCurrency(it.price * it.quantity)}</span>
                   </div>
                 ))}
               </div>

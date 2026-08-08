@@ -1,9 +1,7 @@
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import env from '../config/env.js';
 
-dotenv.config();
-
-const JWT_SECRET = process.env.JWT_SECRET || 'secretkey';
+const JWT_SECRET = env.JWT_SECRET;
 
 export async function protect(req, res, next) {
   let token;
