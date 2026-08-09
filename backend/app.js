@@ -56,7 +56,10 @@ const corsOptions = {
     // allow requests with no origin (mobile apps, curl, server-to-server)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) !== -1) return callback(null, true);
-    return callback(new Error('Not allowed by CORS'));
+    // CORS is enforced by the browser, not the server — disallowed origins should
+    // just get a response with no Access-Control-Allow-Origin header (which the
+    // browser then blocks), not a thrown error that surfaces as an unhandled 500.
+    return callback(null, false);
   },
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
   credentials: true,
