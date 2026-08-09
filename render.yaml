@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: footers-backend
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 1d
+      - key: CORS_ORIGIN
+        sync: false
+      - key: SHIPPING_PROVIDER
+        value: dummy
+      - key: FREE_SHIPPING_THRESHOLD
+        value: "999"
+      - key: SHIPPING_FEE
+        value: "99"
+      - key: GST_RATE
+        value: "0"
+      - key: IMAGE_PROVIDER
+        value: local
+      - key: MAX_FILE_SIZE
+        value: "5242880"
+      - key: LOG_LEVEL
+        value: info

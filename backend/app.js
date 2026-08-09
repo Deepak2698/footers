@@ -20,6 +20,12 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Render/Vercel/Railway (and most PaaS hosts) put the app behind a reverse proxy.
+// Without this, express-rate-limit sees the proxy's IP for every request (or
+// throws on the X-Forwarded-For header it can't safely trust), and req.ip/req.secure
+// would reflect the proxy's connection instead of the real client's.
+app.set('trust proxy', 1);
+
 // Security headers
 app.use(helmet());
 

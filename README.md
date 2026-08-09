@@ -129,16 +129,41 @@ Set `IMAGE_PROVIDER=cloudinary|s3|firebase` and implement the provider in `backe
 ### Payment Gateway
 Checkout collects payment method but does not process online payments yet. Integrate Razorpay/Stripe at checkout.
 
-## Deployment Checklist
+## Deployment
 
-- [ ] Set strong `JWT_SECRET`
-- [ ] Configure production `MONGO_URI`
-- [ ] Set `CORS_ORIGIN` to production domain
-- [ ] Configure SMTP for invoice emails
-- [ ] Run `npm run build` in frontend, serve static files
-- [ ] Use PM2/systemd for backend process
-- [ ] Enable HTTPS
-- [ ] Set up MongoDB backups
+Backend (`backend/`) on **Render** and frontend (`ecommerce-app/`) on **Vercel**, backed by MongoDB Atlas.
+
+### Backend → Render
+
+A Blueprint is committed at `render.yaml` (repo root). In the Render dashboard: New → Blueprint → select this repo. Render reads `render.yaml` and creates the service with `rootDir: backend` already configured. You'll be prompted for the env vars marked `sync: false`:
+
+| Variable | Value |
+|----------|-------|
+| `MONGO_URI` | Your MongoDB Atlas connection string |
+| `JWT_SECRET` | A long random string (never reuse the dev value) |
+| `CORS_ORIGIN` | Your Vercel frontend URL, e.g. `https://footers.vercel.app` |
+
+Render assigns the service a URL like `https://footers-backend.onrender.com` — copy it for the frontend step below. Health check is wired to `/api/health`.
+
+After first deploy, seed the database once (Render dashboard → Shell, or run locally against the Atlas URI):
+```bash
+npm run seed:users
+npm run seed
+```
+
+### Frontend → Vercel
+
+Import the repo in Vercel, and set **Root Directory** to `ecommerce-app` in the project's General settings (the app lives in a subfolder, not the repo root). `ecommerce-app/vercel.json` handles the React Router SPA fallback. Set this env var before the first deploy (CRA bakes it in at build time — changing it later requires a redeploy):
+
+| Variable | Value |
+|----------|-------|
+| `REACT_APP_API_URL` | `https://<your-render-backend>.onrender.com/api` |
+
+### Notes / known limitations
+
+- **Free-tier cold starts**: Render's free plan spins the backend down after inactivity; the first request after idle can take ~30s.
+- **Admin image uploads**: `IMAGE_PROVIDER=local` writes to local disk, which is not persistent storage on Render's free tier (files can be lost on redeploy/restart). The seeded product catalog is unaffected since those images ship as static frontend assets. For durable admin-uploaded images in production, implement the `CLOUDINARY`/`S3` provider referenced in `backend/services/images/ImageService.js` and set `IMAGE_PROVIDER` accordingly.
+- Enable HTTPS (Render and Vercel both provide this automatically) and set up MongoDB Atlas backups from the Atlas dashboard.
 
 ## Troubleshooting
 
