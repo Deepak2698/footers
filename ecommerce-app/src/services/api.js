@@ -1,14 +1,12 @@
 import axios from 'axios';
 
-// Prefer Create React App and Vite env names. Fall back to global window.__ENV if provided.
-const envBase = (
-  // CRA (available in many setups)
-  (typeof process !== 'undefined' && process.env && process.env.REACT_APP_API_URL)
-  // Vite
-  || (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
-  // fallback global injected envs on window
-  || (typeof window !== 'undefined' && (window.__ENV && window.__ENV.REACT_APP_API_URL))
-);
+// Create React App's build replaces the exact text `process.env.REACT_APP_API_URL`
+// with a literal string constant at compile time — there's no real `process` global
+// in the browser, so guarding this with `typeof process !== 'undefined'` always
+// evaluates to false at runtime and silently defeats the whole check. Reference it
+// directly; CRA's replacement makes this safe regardless of build target.
+const envBase = process.env.REACT_APP_API_URL
+  || (typeof window !== 'undefined' && window.__ENV && window.__ENV.REACT_APP_API_URL);
 
 const baseURL = envBase || 'http://localhost:5004/api';
 
